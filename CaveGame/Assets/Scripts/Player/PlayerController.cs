@@ -74,6 +74,7 @@ public class PlayerController : MonoBehaviour
     private void OnSprint(InputValue inputValue)
     {
         isRunning = inputValue.isPressed;
+        Debug.Log($"{isRunning}");
     }
 
     private void OnMove(InputValue inputValue)
