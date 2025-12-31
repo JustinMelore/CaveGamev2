@@ -9,8 +9,10 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private CharacterController characterController;
-    private Camera playerCamera;
+    private Animator animator;
 
+    [Header("Static settings")]
+    [SerializeField] private Transform playerCamera;
 
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 2f;
@@ -45,7 +47,8 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
-        playerCamera = FindFirstObjectByType<Camera>();
+        animator = GetComponent<Animator>();
+        //playerCamera = FindFirstObjectByType<Camera>();
         objectivesInRange = new HashSet<ObjectiveItem>();
         ObjectiveItem.OnObjeciveRangeEnter += AddObjective;
         ObjectiveItem.OnObjectiveRangeExit += RemoveObjective;
@@ -138,6 +141,14 @@ public class PlayerController : MonoBehaviour
         movement.y = playerVelocity.y;
         playerCamera.transform.localRotation = Quaternion.Euler(playerRotation.x, 0f, 0f);
         characterController.Move(movement * Time.deltaTime);
+
+        if (playerVelocity.x != 0 || playerVelocity.z != 0)
+        {
+            animator.SetInteger("Speed", (isRunning) ? 2 : 1);
+        } else
+        {
+            animator.SetInteger("Speed", 0);
+        }
     }
 
     private void CheckForInteraction()
