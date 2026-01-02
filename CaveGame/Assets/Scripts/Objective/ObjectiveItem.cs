@@ -60,4 +60,11 @@ public class ObjectiveItem : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = new Color(0f, 1f, 0f);
+        if(detectionRange != null)
+            Gizmos.DrawSphere(transform.position, detectionRange.radius);
+    }
 }
