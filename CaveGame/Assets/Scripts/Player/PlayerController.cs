@@ -6,6 +6,10 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Script that controls the player, including both movement and the radio
+/// </summary>
+
 public class PlayerController : MonoBehaviour
 {
     private CharacterController characterController;
@@ -48,38 +52,44 @@ public class PlayerController : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
-        //playerCamera = FindFirstObjectByType<Camera>();
         objectivesInRange = new HashSet<ObjectiveItem>();
+        Cursor.lockState = CursorLockMode.Locked;
+
+        //TODO Uncomment for audio feedback
+        //radioStaticSource.volume = 0f;
+        //radioObjectiveSoundSource.volume = 0f;
+    }
+
+    private void OnEnable()
+    {
         ObjectiveItem.OnObjeciveRangeEnter += AddObjective;
         ObjectiveItem.OnObjectiveRangeExit += RemoveObjective;
         InteractionRange.OnInteractRangeEnter += RegisterInteractable;
         InteractionRange.OnInteractRangeExit += RemoveInteractable;
-        //radioStaticSource.volume = 0f;
-        //radioObjectiveSoundSource.volume = 0f;
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
-    //public Vector3 getPV() //added to make creature tracking easier
-    //{
-    //    return playerVelocity;
-    //}
+    private void OnDisable()
+    {
+        ObjectiveItem.OnObjeciveRangeEnter -= AddObjective;
+        ObjectiveItem.OnObjectiveRangeExit -= RemoveObjective;
+        InteractionRange.OnInteractRangeEnter -= RegisterInteractable;
+        InteractionRange.OnInteractRangeExit -= RemoveInteractable;
+    }
 
-    //public AudioSource getRSS() //same as above
-    //{
-    //    return radioStaticSource;
-    //}
-
-    //public AudioSource getROS() //same as above
-    //{
-    //    return radioObjectiveSoundSource;
-    //}
-
+    /// <summary>
+    /// Triggers when the player interacts with the sprint button
+    /// </summary>
+    /// <param name="inputValue"></param>
     private void OnSprint(InputValue inputValue)
     {
         isRunning = inputValue.isPressed;
         Debug.Log($"{isRunning}");
     }
 
+    /// <summary>
+    /// Triggers when the player interacts with the movement buttons
+    /// </summary>
+    /// <param name="inputValue"></param>
     private void OnMove(InputValue inputValue)
     {
         //Vector2 inputVector = Vector2.Normalize(inputValue.Get<Vector2>());
@@ -89,6 +99,10 @@ public class PlayerController : MonoBehaviour
         playerVelocity.z = inputVector.y;
     }
 
+    /// <summary>
+    /// Triggers when the camera moves the camera
+    /// </summary>
+    /// <param name="inputValue"></param>
     private void OnLook(InputValue inputValue)
     {
         Vector2 mouseMovement = inputValue.Get<Vector2>();
@@ -97,6 +111,10 @@ public class PlayerController : MonoBehaviour
         playerRotation.x = Mathf.Clamp(playerRotation.x, -90f, 90f);
     }
 
+    /// <summary>
+    /// Triggers when the player interacts with the tune radio button
+    /// </summary>
+    /// <param name="inputValue"></param>
     private void OnTuneRadio(InputValue inputValue)
     {
         isTuning = inputValue.isPressed;
@@ -114,6 +132,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Triggers when the player interacts with the interact button
+    /// </summary>
+    /// <param name="inputValue"></param>
     private void OnInteract(InputValue inputValue)
     {
         if (canInteract && interactable != null)
@@ -131,17 +153,22 @@ public class PlayerController : MonoBehaviour
         if (interactable != null) CheckForInteraction();
     }
 
+    /// <summary>
+    /// Moves the player based on their current inputs
+    /// </summary>
     private void MovePlayer()
     {
         if (characterController.isGrounded && playerVelocity.y < 0) playerVelocity.y = -2f;
         playerVelocity.y += gravity * Time.deltaTime;
-        transform.rotation = Quaternion.Euler(playerRotation);
+        //transform.rotation = Quaternion.Euler(playerRotation);
         transform.rotation = Quaternion.Euler(0f, playerRotation.y, 0f);
         Vector3 movement = (isRunning && !isTuning ? sprintSpeedMultiplier : 1f) * moveSpeed * (transform.right * playerVelocity.x + transform.forward * playerVelocity.z);
         movement.y = playerVelocity.y;
         playerCamera.transform.localRotation = Quaternion.Euler(playerRotation.x, 0f, 0f);
         characterController.Move(movement * Time.deltaTime);
 
+
+        //TODO Tweak this to interact with the tuning animation
         if (playerVelocity.x != 0 || playerVelocity.z != 0)
         {
             animator.SetInteger("Speed", (isRunning) ? 2 : 1);
@@ -151,6 +178,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks to see if the player can interact with an object and updates their status based on the result
+    /// </summary>
     private void CheckForInteraction()
     {
         float interactableLookCloseness = CalculateLookCloseness(interactable.gameObject);
@@ -171,28 +201,38 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Determines if the player is moving horizontally
+    /// </summary>
+    /// <returns></returns>
     public bool IsMoving()
     {
         return playerVelocity.x != 0 || playerVelocity.z != 0;
     }
 
+    /// <summary>
+    /// Determines if the player is running
+    /// </summary>
+    /// <returns></returns>
     public bool IsRunning()
     {
         return IsMoving() && isRunning;
     }
 
-    private void OnDisable()
-    {
-        ObjectiveItem.OnObjeciveRangeEnter -= AddObjective;
-        ObjectiveItem.OnObjectiveRangeExit -= RemoveObjective;
-    }
-
+    /// <summary>
+    /// Adds a new objective to the list of ones in range of the player
+    /// </summary>
+    /// <param name="objective"></param>
     private void AddObjective(ObjectiveItem objective)
     {
         objectivesInRange.Add(objective);
         Debug.Log($"Objective in range; {objectivesInRange.Count} objectives in range");
     }
 
+    /// <summary>
+    /// Removes a given objective from the list of ones in range of the player
+    /// </summary>
+    /// <param name="objective"></param>
     private void RemoveObjective(ObjectiveItem objective)
     {
         objectivesInRange.Remove(objective);
@@ -200,33 +240,40 @@ public class PlayerController : MonoBehaviour
     }
 
 #nullable enable
+    /// <summary>
+    /// Calculates what the closest objective to the player is and tunes to it if one exists, with the volume of the objective scaling with look precision and distance
+    /// </summary>
     private void ScanForObjectives()
     {
         if (objectivesInRange.Count == 0)
         {
+            //TODO Uncomment for audio feedback
             //radioStaticSource.volume = radioStaticMaxVolume;
             //radioObjectiveSoundSource.volume = 0f;
         }
-        //float mostDirectDot = minimumObjectiveCloseness;
+
         float mostDirectDot = -1f;
         ObjectiveItem? mostDirectObjective = null;
+
         float minimumCloseness = 0f;
         float distancePercentage = 0f;
+
         foreach (ObjectiveItem objective in objectivesInRange)
         {
-            //Vector3 directionToObjective = objective.transform.position - transform.position;
-            //directionToObjective.Normalize();
-            //float currentObjectiveDotProduct = Vector3.Dot(directionToObjective, transform.forward);
             float currentObjectiveDotProduct = CalculateLookCloseness(objective.gameObject);
             float distanceToObjective = Vector3.Distance(objective.transform.position, transform.position);
+
             distancePercentage = (objective.GetObjectiveRange() - distanceToObjective - 1) / (objective.GetObjectiveRange() - 1);
+            //The closer the player is to the objective, the less precisely they have to look at it
             minimumCloseness = minimumObjectiveCloseness - distancePercentage * minimumObjectiveCloseness;
+
             if (currentObjectiveDotProduct >= mostDirectDot && currentObjectiveDotProduct >= minimumCloseness)
             {
                 mostDirectDot = currentObjectiveDotProduct;
                 mostDirectObjective = objective;
             }
         }
+
         if (mostDirectObjective != null)
         {
             float closenessRange = 1f - minimumCloseness;
@@ -234,17 +281,25 @@ public class PlayerController : MonoBehaviour
             Debug.Log($"Closeness range: {closenessRange}");
             Debug.Log($"Closeness: {mostDirectDot}");
             float objectiveVolumePercentage = mostDirectDot / closenessRange;
+
+            //TODO Uncomment for audio feedback
             //radioStaticSource.volume = radioStaticMaxVolume - radioStaticMaxVolume * objectiveVolumePercentage;
             //radioObjectiveSoundSource.volume = radioObjectiveMaxVolume * objectiveVolumePercentage;
             //radioObjectiveSoundSource.volume = radioObjectiveMaxVolume * distancePercentage;
         }
         else
         {
+            //TODO Uncomment for audio feedback
             //radioStaticSource.volume = radioStaticMaxVolume;
             //radioObjectiveSoundSource.volume = 0f;
         }
     }
 
+    /// <summary>
+    /// Calculates how closely the player is looking at a given object
+    /// </summary>
+    /// <param name="other">The game object being looked at</param>
+    /// <returns></returns>
     private float CalculateLookCloseness(GameObject other)
     {
         Vector3 directionToObject = other.transform.position - transform.position;
@@ -252,12 +307,20 @@ public class PlayerController : MonoBehaviour
         return Vector3.Dot(directionToObject, transform.forward);
     }
 
+    /// <summary>
+    /// Sets a given interactable to be the one the player can currently interact with
+    /// </summary>
+    /// <param name="interactable"></param>
     private void RegisterInteractable(InteractionRange interactable)
     {
         this.interactable = interactable;
         Debug.Log($"Entered interaction range of {interactable}");
     }
 
+    /// <summary>
+    /// Makes the player unable to interact with a given interactable
+    /// </summary>
+    /// <param name="interactable"></param>
     private void RemoveInteractable(InteractionRange interactable)
     {
         this.interactable = null;
