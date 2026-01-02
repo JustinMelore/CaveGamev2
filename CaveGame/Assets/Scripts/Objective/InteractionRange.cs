@@ -1,6 +1,9 @@
 using UnityEngine;
 using System;
 
+/// <summary>
+/// Script that handles the range for interactable objects
+/// </summary>
 public class InteractionRange : MonoBehaviour
 {
     public static event Action<InteractionRange> OnInteractRangeEnter;
@@ -26,6 +29,10 @@ public class InteractionRange : MonoBehaviour
         OnInteractRangeExit?.Invoke(this);
     }
 
+    /// <summary>
+    /// Triggers when an object is interacted with by the player
+    /// </summary>
+    /// <param name="interactable"></param>
     private void OnInteract(InteractionRange interactable)
     {
         if (this == interactable)

@@ -1,6 +1,9 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// Script that handles the behavior of objectives
+/// </summary>
 public class ObjectiveItem : MonoBehaviour
 {
     public static event Action<ObjectiveItem> OnObjeciveRangeEnter;
@@ -30,11 +33,19 @@ public class ObjectiveItem : MonoBehaviour
         OnObjectiveRangeExit?.Invoke(this);
     }
 
+    /// <summary>
+    /// Returns the range of this objective
+    /// </summary>
+    /// <returns></returns>
     public float GetObjectiveRange()
     {
         return detectionRange.radius;
     }
 
+    /// <summary>
+    /// Triggers when the player interacts with an object
+    /// </summary>
+    /// <param name="interactable">The object that was interacted with</param>
     private void InteractWithObjective(InteractionRange interactable)
     {
         if (interactable == interactionRange)
