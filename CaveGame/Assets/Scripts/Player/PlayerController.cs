@@ -118,6 +118,7 @@ public class PlayerController : MonoBehaviour
     private void OnTuneRadio(InputValue inputValue)
     {
         isTuning = inputValue.isPressed;
+        animator.SetBool("Tuning", isTuning);
         if (isTuning)
         {
 
