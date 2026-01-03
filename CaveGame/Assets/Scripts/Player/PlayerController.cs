@@ -25,8 +25,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float sprintSpeedMultiplier = 2f;
 
     [Header("Radio Settings")]
-    //[SerializeField] private AudioSource radioStaticSource;
-    //[SerializeField] private AudioSource radioObjectiveSoundSource;
+    [SerializeField] private AudioSource radioStaticSource;
+    [SerializeField] private AudioSource radioObjectiveSoundSource;
     [SerializeField][UnityEngine.Range(-1, 1)] private float minimumObjectiveCloseness;
     [SerializeField][UnityEngine.Range(0, 1)] private float radioStaticMaxVolume;
     [SerializeField][UnityEngine.Range(0, 1)] private float radioObjectiveMaxVolume;
@@ -56,8 +56,8 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         //TODO Uncomment for audio feedback
-        //radioStaticSource.volume = 0f;
-        //radioObjectiveSoundSource.volume = 0f;
+        radioStaticSource.volume = 0f;
+        radioObjectiveSoundSource.volume = 0f;
     }
 
     private void OnEnable()
@@ -121,13 +121,13 @@ public class PlayerController : MonoBehaviour
         if (isTuning)
         {
 
-            //radioStaticSource.volume = radioStaticMaxVolume;
+            radioStaticSource.volume = radioStaticMaxVolume;
             Debug.Log("Tuning radio");
         }
         else
         {
-            //radioStaticSource.volume = 0f;
-            //radioObjectiveSoundSource.volume = 0f;
+            radioStaticSource.volume = 0f;
+            radioObjectiveSoundSource.volume = 0f;
             Debug.Log("Stopped tuning radio");
         }
     }
@@ -248,8 +248,8 @@ public class PlayerController : MonoBehaviour
         if (objectivesInRange.Count == 0)
         {
             //TODO Uncomment for audio feedback
-            //radioStaticSource.volume = radioStaticMaxVolume;
-            //radioObjectiveSoundSource.volume = 0f;
+            radioStaticSource.volume = radioStaticMaxVolume;
+            radioObjectiveSoundSource.volume = 0f;
         }
 
         float mostDirectDot = -1f;
@@ -283,15 +283,15 @@ public class PlayerController : MonoBehaviour
             float objectiveVolumePercentage = mostDirectDot / closenessRange;
 
             //TODO Uncomment for audio feedback
-            //radioStaticSource.volume = radioStaticMaxVolume - radioStaticMaxVolume * objectiveVolumePercentage;
-            //radioObjectiveSoundSource.volume = radioObjectiveMaxVolume * objectiveVolumePercentage;
-            //radioObjectiveSoundSource.volume = radioObjectiveMaxVolume * distancePercentage;
+            radioStaticSource.volume = radioStaticMaxVolume - radioStaticMaxVolume * objectiveVolumePercentage;
+            radioObjectiveSoundSource.volume = radioObjectiveMaxVolume * objectiveVolumePercentage;
+            radioObjectiveSoundSource.volume = radioObjectiveMaxVolume * distancePercentage;
         }
         else
         {
             //TODO Uncomment for audio feedback
-            //radioStaticSource.volume = radioStaticMaxVolume;
-            //radioObjectiveSoundSource.volume = 0f;
+            radioStaticSource.volume = radioStaticMaxVolume;
+            radioObjectiveSoundSource.volume = 0f;
         }
     }
 
