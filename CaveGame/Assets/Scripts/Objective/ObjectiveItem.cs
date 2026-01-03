@@ -50,7 +50,7 @@ public class ObjectiveItem : MonoBehaviour
     {
         if (interactable == interactionRange)
         {
-            //detectionRange.gameObject.SetActive(false);
+            detectionRange.gameObject.SetActive(false);
 
             PlayerController.OnInteractWithObject -= InteractWithObjective;
             OnObjectiveRangeExit?.Invoke(this);
