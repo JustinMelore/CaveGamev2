@@ -9,6 +9,8 @@ public class InteractionRange : MonoBehaviour
     public static event Action<InteractionRange> OnInteractRangeEnter;
     public static event Action<InteractionRange> OnInteractRangeExit;
 
+    [SerializeField] private bool isSingleUse = true;
+
     private void Awake()
     {
         PlayerController.OnInteractWithObject += OnInteract;
@@ -38,7 +40,8 @@ public class InteractionRange : MonoBehaviour
         if (this == interactable)
         {
             OnInteractRangeExit?.Invoke(this);
-            this.gameObject.SetActive(false);
+            if(isSingleUse)
+                gameObject.SetActive(false);
         }
     }
 }
