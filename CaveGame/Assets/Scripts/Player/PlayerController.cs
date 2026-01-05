@@ -138,6 +138,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void StopTuning()
+    {
+        animator.SetBool("Tuning", false);
+        radioStaticSource.volume = 0f;
+        radioObjectiveSoundSource.volume = 0f;
+        isTuning = false;
+        Debug.Log("Stopped tuning radio");
+    }
+
     /// <summary>
     /// Triggers when the player interacts with the interact button
     /// </summary>
@@ -354,6 +363,7 @@ public class PlayerController : MonoBehaviour
         playerRotation = hidingPlace.transform.rotation.eulerAngles;
         playerVelocity = Vector3.zero;
         characterController.enabled = true;
+        StopTuning();
         Debug.Log($"Player hiding in {hidingPlace.gameObject}");
     }
 
