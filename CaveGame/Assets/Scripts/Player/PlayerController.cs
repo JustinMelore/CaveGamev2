@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private bool isTuning = false;
     private InteractionRange interactable;
     private bool canInteract;
+    private bool hidden = false;
 
     //Made a hash set to easily add and remove objectives
     private HashSet<ObjectiveItem> objectivesInRange;
@@ -66,6 +67,8 @@ public class PlayerController : MonoBehaviour
         ObjectiveItem.OnObjectiveRangeExit += RemoveObjective;
         InteractionRange.OnInteractRangeEnter += RegisterInteractable;
         InteractionRange.OnInteractRangeExit += RemoveInteractable;
+        HidingPlace.OnHidingEnter += Hide;
+        HidingPlace.OnHidingExit += ExitHiding;
     }
 
     private void OnDisable()
@@ -82,6 +85,7 @@ public class PlayerController : MonoBehaviour
     /// <param name="inputValue"></param>
     private void OnSprint(InputValue inputValue)
     {
+        if (!enabled && inputValue.isPressed) return;
         isRunning = inputValue.isPressed;
         Debug.Log($"{isRunning}");
     }
@@ -94,7 +98,7 @@ public class PlayerController : MonoBehaviour
     {
         //Vector2 inputVector = Vector2.Normalize(inputValue.Get<Vector2>());
         Vector2 inputVector = inputValue.Get<Vector2>();
-        inputValue.Get<Vector2>().Normalize();
+        inputVector.Normalize();
         playerVelocity.x = inputVector.x;
         playerVelocity.z = inputVector.y;
     }
@@ -117,6 +121,7 @@ public class PlayerController : MonoBehaviour
     /// <param name="inputValue"></param>
     private void OnTuneRadio(InputValue inputValue)
     {
+        if (!enabled || hidden) return;
         isTuning = inputValue.isPressed;
         animator.SetBool("Tuning", isTuning);
         if (isTuning)
@@ -139,6 +144,7 @@ public class PlayerController : MonoBehaviour
     /// <param name="inputValue"></param>
     private void OnInteract(InputValue inputValue)
     {
+        if (!enabled) return;
         if (canInteract && interactable != null)
         {
             OnInteractWithObject?.Invoke(interactable);
@@ -161,12 +167,13 @@ public class PlayerController : MonoBehaviour
     {
         if (characterController.isGrounded && playerVelocity.y < 0) playerVelocity.y = -2f;
         playerVelocity.y += gravity * Time.deltaTime;
+        if (!enabled) return;
         //transform.rotation = Quaternion.Euler(playerRotation);
         transform.rotation = Quaternion.Euler(0f, playerRotation.y, 0f);
         Vector3 movement = (isRunning && !isTuning ? sprintSpeedMultiplier : 1f) * moveSpeed * (transform.right * playerVelocity.x + transform.forward * playerVelocity.z);
         movement.y = playerVelocity.y;
         playerCamera.transform.localRotation = Quaternion.Euler(playerRotation.x, 0f, 0f);
-        characterController.Move(movement * Time.deltaTime);
+        if(!hidden) characterController.Move(movement * Time.deltaTime);
 
 
         //TODO Tweak this to interact with the tuning animation
@@ -331,5 +338,36 @@ public class PlayerController : MonoBehaviour
             canInteract = false;
         }
         Debug.Log($"Exited interaction range of {interactable}");
+    }
+
+    /// <summary>
+    /// Hides the player in a given hiding place
+    /// </summary>
+    /// <param name="hidingPlace"></param>
+    private void Hide(HidingPlace hidingPlace)
+    {
+        //TODO Tweak to accomodate hiding animation
+        hidden = true;
+        characterController.enabled = false;
+        transform.position = hidingPlace.GetEntryPoint().position;
+        //playerRotation = Vector3.zero;
+        playerRotation = hidingPlace.transform.rotation.eulerAngles;
+        playerVelocity = Vector3.zero;
+        characterController.enabled = true;
+        Debug.Log($"Player hiding in {hidingPlace.gameObject}");
+    }
+
+    /// <summary>
+    /// Has the player stop hiding in a given hiding place
+    /// </summary>
+    /// <param name="hidingPlace"></param>
+    private void ExitHiding(HidingPlace hidingPlace)
+    {
+        //TODO Tweak to accomodate exiting animation
+        hidden = false;
+        characterController.enabled = false;
+        transform.position = hidingPlace.GetExitPoint().position;
+        characterController.enabled = true;
+        Debug.Log($"Player exited {hidingPlace.gameObject}");
     }
 }

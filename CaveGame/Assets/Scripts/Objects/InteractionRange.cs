@@ -39,9 +39,11 @@ public class InteractionRange : MonoBehaviour
     {
         if (this == interactable)
         {
-            OnInteractRangeExit?.Invoke(this);
             if(isSingleUse)
+            {
+                OnInteractRangeExit?.Invoke(this);
                 gameObject.SetActive(false);
+            }
         }
     }
 }
