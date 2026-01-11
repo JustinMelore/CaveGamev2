@@ -48,4 +48,15 @@ public class MonsterStateManager : MonoBehaviour
         currentState = newState;
         currentState.EnterState(this);
     }
+
+    /// <summary>
+    /// Manages the monster's response for when it heears a sound
+    /// </summary>
+    /// <param name="volume">The volume level of the sound it heard</param>
+    /// <param name="position">The position the sound occurred at</param>
+    public void SoundHeard(SoundLevel volume, Vector3 position)
+    {
+        Debug.Log($"Monster heard {volume} sound at {position}");
+    }
 }
+ 
