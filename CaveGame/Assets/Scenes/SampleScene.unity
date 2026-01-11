@@ -1251,8 +1251,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e52774f3240d0d84a8927fe72a8ee86e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterStateManager
-  wanderSpeed: 5
-  wanderRadius: 10
+  idleTime: 2
+  wanderSpeed: 3
+  wanderRadius: 30
 --- !u!1001 &3018663483750439268
 PrefabInstance:
   m_ObjectHideFlags: 0

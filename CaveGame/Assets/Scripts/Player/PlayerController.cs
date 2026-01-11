@@ -37,6 +37,7 @@ public class PlayerController : MonoBehaviour
     public static event Action<InteractionRange> OnLookAtInteractable;
     public static event Action<InteractionRange> OnLookAwayFromInteractable;
     public static event Action<InteractionRange> OnInteractWithObject;
+    public static event Action<SoundLevel> OnCauseSound;
 
     private Vector3 playerVelocity;
     private Vector3 playerRotation;
@@ -185,10 +186,18 @@ public class PlayerController : MonoBehaviour
         if(!hidden) characterController.Move(movement * Time.deltaTime);
 
 
-        //TODO Tweak this to interact with the tuning animation
         if (playerVelocity.x != 0 || playerVelocity.z != 0)
         {
-            animator.SetInteger("Speed", (isRunning) ? 2 : 1);
+            if (isRunning)
+            {
+                animator.SetInteger("Speed", 2);
+                OnCauseSound?.Invoke(SoundLevel.MODERATE);
+            }
+            else
+            {
+                animator.SetInteger("Speed", (isRunning) ? 2 : 1);
+                OnCauseSound?.Invoke(SoundLevel.QUIET);
+            }
         } else
         {
             animator.SetInteger("Speed", 0);
@@ -310,6 +319,7 @@ public class PlayerController : MonoBehaviour
             radioStaticSource.volume = radioStaticMaxVolume;
             radioObjectiveSoundSource.volume = 0f;
         }
+        OnCauseSound?.Invoke(SoundLevel.LOUD);
     }
 
     /// <summary>

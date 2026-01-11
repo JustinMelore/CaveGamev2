@@ -7,19 +7,25 @@ using UnityEngine.AI;
 public class MonsterStateManager : MonoBehaviour
 {
     private NavMeshAgent agent;
-    
+
+    [Header("Idling Settings")]
+    [SerializeField] private float idleTime;
+
     [Header("Wandering Settings")]
     [SerializeField] private float wanderSpeed = 1f;
     [SerializeField] private float wanderRadius = 10f;
 
+
     private MonsterState currentState;
 
     public WanderingState WanderingState { get; private set; }
+    public IdleState IdleState { get; private set; }
 
     
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        IdleState = new IdleState(idleTime);
         WanderingState = new WanderingState(agent, wanderSpeed, wanderRadius);
     }
 

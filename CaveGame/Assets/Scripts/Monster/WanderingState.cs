@@ -60,7 +60,8 @@ public class WanderingState : MonsterState
     {
         if(agent.remainingDistance <= 0.1f || agent.path == null)
         {
-            WanderToPoint(manager.transform.position);
+            agent.ResetPath();
+            manager.SwitchState(manager.IdleState);
         }
     }
 }
