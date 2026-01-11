@@ -64,4 +64,11 @@ public class WanderingState : MonsterState
             manager.SwitchState(manager.IdleState);
         }
     }
+
+    public override void SoundHeard(MonsterStateManager manager, SoundLevel volume, Vector3 position)
+    {
+        agent.ResetPath();
+        manager.TriggeringSound = new Sound(volume, position);
+        manager.SwitchState(manager.InvestigatingState);
+    }
 }

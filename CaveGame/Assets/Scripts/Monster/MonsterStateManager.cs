@@ -15,11 +15,21 @@ public class MonsterStateManager : MonoBehaviour
     [SerializeField] private float wanderSpeed = 1f;
     [SerializeField] private float wanderRadius = 10f;
 
+    [Header("Investigating Settings")]
+    //TODO make several different investigating speeds
+    [SerializeField] private float investigatingSpeed;
+
 
     private MonsterState currentState;
 
     public WanderingState WanderingState { get; private set; }
     public IdleState IdleState { get; private set; }
+    public InvestigatingState InvestigatingState { get; private set; }
+
+    /// <summary>
+    /// The position of the last significant sound heard by the monster
+    /// </summary>
+    public Sound TriggeringSound { get; set; }
 
     
     void Awake()
@@ -27,6 +37,7 @@ public class MonsterStateManager : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         IdleState = new IdleState(idleTime);
         WanderingState = new WanderingState(agent, wanderSpeed, wanderRadius);
+        InvestigatingState = new InvestigatingState(agent, investigatingSpeed);
     }
 
     private void Start()
@@ -57,6 +68,7 @@ public class MonsterStateManager : MonoBehaviour
     public void SoundHeard(SoundLevel volume, Vector3 position)
     {
         Debug.Log($"Monster heard {volume} sound at {position}");
+        currentState.SoundHeard(this, volume, position);
     }
 }
  

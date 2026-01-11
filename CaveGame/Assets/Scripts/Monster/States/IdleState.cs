@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// State for when the monster is standing still
+/// </summary>
 public class IdleState : MonsterState
 {
     private float idleTime;
@@ -15,6 +18,12 @@ public class IdleState : MonsterState
     {
         currentIdleTime = 0f;
         Debug.Log("Monster idling");
+    }
+
+    public override void SoundHeard(MonsterStateManager manager, SoundLevel volume, Vector3 position)
+    {
+        manager.TriggeringSound = new Sound(volume, position);
+        manager.SwitchState(manager.InvestigatingState);
     }
 
     public override void Update(MonsterStateManager manager)
