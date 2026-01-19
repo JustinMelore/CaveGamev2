@@ -11,6 +11,7 @@ public class ChasingState : MonsterState
 
     private const float targetChangeCooldown = 0.3f;
     private float currentTargetChangeTimer;
+    private bool updatingTarget;
 
     public ChasingState(NavMeshAgent agent, float chasingSpeed, PlayerController player)
     {
@@ -18,6 +19,7 @@ public class ChasingState : MonsterState
         this.chasingSpeed = chasingSpeed;
         this.player = player;
         currentTargetChangeTimer = targetChangeCooldown;
+        updatingTarget = false;
     }
 
     public override void EnterState(MonsterStateManager manager)
@@ -38,7 +40,7 @@ public class ChasingState : MonsterState
     {
         currentTargetChangeTimer += Time.deltaTime;
         UpdateTarget();
-        if(!agent.pathPending && agent.remainingDistance <= 0.1f)
+        if(!agent.pathPending && agent.remainingDistance <= 0.1f && !updatingTarget)
         {
             agent.ResetPath();
             manager.SwitchState(manager.IdleState);
@@ -51,6 +53,11 @@ public class ChasingState : MonsterState
     private void UpdateTarget()
     {
         if (currentTargetChangeTimer < targetChangeCooldown) return;
+        if(player.IsHidden())
+        {
+            updatingTarget = false;
+            return;
+        }
         NavMeshHit hit = new NavMeshHit();
         bool isValidTarget = NavMesh.SamplePosition(player.transform.position, out hit, 10f, 1);
         if(isValidTarget)
@@ -58,5 +65,6 @@ public class ChasingState : MonsterState
             agent.SetDestination(hit.position);
             currentTargetChangeTimer = 0f;
         }
+        updatingTarget = isValidTarget;
     }
 }

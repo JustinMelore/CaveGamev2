@@ -269,6 +269,15 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns whether or not the player is currently hidden
+    /// </summary>
+    /// <returns></returns>
+    public bool IsHidden()
+    {
+        return hidden;
+    }
+
+    /// <summary>
     /// Adds a new objective to the list of ones in range of the player
     /// </summary>
     /// <param name="objective"></param>

@@ -40,7 +40,7 @@ public class ListeningRange : MonoBehaviour
     /// <param name="volume">The volume level of the sound that occurred</param>
     private void SoundHeard(SoundLevel volume)
     {
-        if (volume < minAudibleLevel) return;
+        if (player == null || volume < minAudibleLevel) return;
         //Debug.Log($"{volume} sound adjusted with {minAudibleLevel} = {(int)volume - (int)minAudibleLevel + 1}");
         int adjustedVolume = (int)volume - (int)minAudibleLevel + 1; //The lower the minAudibleLevel is, the more aggressively the monster will react to various audio levels
         monster.SoundHeard((SoundLevel)adjustedVolume, player.transform.position, this);
