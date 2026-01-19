@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -17,8 +19,10 @@ public class MonsterStateManager : MonoBehaviour
 
     [Header("Investigating Settings")]
     //TODO make several different investigating speeds
-    [SerializeField] private float investigatingSpeed;
+    [SerializeField] private float quietInvestigatingSpeed = 1f;
+    [SerializeField] private float moderateInvestigatingSpeed = 1f;
 
+    private Stack<ListeningRange> rangeStack;
 
     private MonsterState currentState;
 
@@ -34,10 +38,36 @@ public class MonsterStateManager : MonoBehaviour
     
     void Awake()
     {
+        rangeStack = new Stack<ListeningRange>();
         agent = GetComponent<NavMeshAgent>();
         IdleState = new IdleState(idleTime);
         WanderingState = new WanderingState(agent, wanderSpeed, wanderRadius);
-        InvestigatingState = new InvestigatingState(agent, investigatingSpeed);
+        InvestigatingState = new InvestigatingState(agent, quietInvestigatingSpeed, moderateInvestigatingSpeed);
+    }
+
+    private void OnEnable()
+    {
+        ListeningRange.OnPlayerEnterRange += PushListeningStack;
+        ListeningRange.OnPlayerExitRange += PopListeningStack;
+    }
+
+    private void OnDisable()
+    {
+        ListeningRange.OnPlayerEnterRange -= PushListeningStack;
+        ListeningRange.OnPlayerExitRange -= PopListeningStack;
+    }
+
+    private void PushListeningStack(ListeningRange range)
+    {
+        rangeStack.Push(range);
+    }
+
+    private void PopListeningStack(ListeningRange range)
+    {
+        if(rangeStack.Count > 0 && rangeStack.Peek() == range)
+        {
+            rangeStack.Pop();
+        }
     }
 
     private void Start()
@@ -65,9 +95,10 @@ public class MonsterStateManager : MonoBehaviour
     /// </summary>
     /// <param name="volume">The volume level of the sound it heard</param>
     /// <param name="position">The position the sound occurred at</param>
-    public void SoundHeard(SoundLevel volume, Vector3 position)
+    public void SoundHeard(SoundLevel volume, Vector3 position, ListeningRange range)
     {
-        Debug.Log($"Monster heard {volume} sound at {position}");
+        //Debug.Log($"Monster heard {volume} sound at {position}");
+        if (range != rangeStack.Peek()) return;
         currentState.SoundHeard(this, volume, position);
     }
 }

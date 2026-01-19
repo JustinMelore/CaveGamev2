@@ -58,7 +58,7 @@ public class WanderingState : MonsterState
 
     public override void Update(MonsterStateManager manager)
     {
-        if(agent.remainingDistance <= 0.1f || agent.path == null)
+        if(agent.remainingDistance <= 0.1f)
         {
             agent.ResetPath();
             manager.SwitchState(manager.IdleState);

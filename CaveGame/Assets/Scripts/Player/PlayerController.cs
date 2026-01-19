@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
     [Header("Interaction Settings")]
     [SerializeField][UnityEngine.Range(-1, 1)] private float minimumInteractableCloseness;
 
+    //Events
     public static event Action<InteractionRange> OnLookAtInteractable;
     public static event Action<InteractionRange> OnLookAwayFromInteractable;
     public static event Action<InteractionRange> OnInteractWithObject;
@@ -41,6 +42,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 playerVelocity;
     private Vector3 playerRotation;
+    private bool runButtonPressed = false;
     private bool isRunning = false;
     private bool isTuning = false;
     private InteractionRange interactable;
@@ -87,8 +89,8 @@ public class PlayerController : MonoBehaviour
     private void OnSprint(InputValue inputValue)
     {
         if (!enabled && inputValue.isPressed) return;
-        isRunning = inputValue.isPressed;
-        Debug.Log($"{isRunning}");
+        runButtonPressed = inputValue.isPressed;
+        //Debug.Log($"{isRunning}");
     }
 
     /// <summary>
@@ -168,6 +170,17 @@ public class PlayerController : MonoBehaviour
         MovePlayer();
         if (isTuning) ScanForObjectives();
         if (interactable != null) CheckForInteraction();
+        EmitSound();
+    }
+
+    /// <summary>
+    /// Helper method that determines what sound level the player is emitting this frame
+    /// </summary>
+    private void EmitSound()
+    {
+        if (isTuning) OnCauseSound?.Invoke(SoundLevel.LOUD);
+        else if (isRunning) OnCauseSound?.Invoke(SoundLevel.MODERATE);
+        else if (IsMoving()) OnCauseSound?.Invoke(SoundLevel.QUIET);
     }
 
     /// <summary>
@@ -180,7 +193,17 @@ public class PlayerController : MonoBehaviour
         if (!enabled) return;
         //transform.rotation = Quaternion.Euler(playerRotation);
         transform.rotation = Quaternion.Euler(0f, playerRotation.y, 0f);
-        Vector3 movement = (isRunning && !isTuning ? sprintSpeedMultiplier : 1f) * moveSpeed * (transform.right * playerVelocity.x + transform.forward * playerVelocity.z);
+        //Vector3 movement = (runButtonPressed && !isTuning ? sprintSpeedMultiplier : 1f) * moveSpeed * (transform.right * playerVelocity.x + transform.forward * playerVelocity.z);
+        Vector3 movement;
+        if(runButtonPressed && !isTuning)
+        {
+            isRunning = true;
+            movement = sprintSpeedMultiplier * moveSpeed * (transform.right * playerVelocity.x + transform.forward * playerVelocity.z);
+        } else
+        {
+            isRunning = false;
+            movement = moveSpeed * (transform.right * playerVelocity.x + transform.forward * playerVelocity.z);
+        }
         movement.y = playerVelocity.y;
         playerCamera.transform.localRotation = Quaternion.Euler(playerRotation.x, 0f, 0f);
         if(!hidden) characterController.Move(movement * Time.deltaTime);
@@ -191,12 +214,12 @@ public class PlayerController : MonoBehaviour
             if (isRunning)
             {
                 animator.SetInteger("Speed", 2);
-                OnCauseSound?.Invoke(SoundLevel.MODERATE);
+                //OnCauseSound?.Invoke(SoundLevel.MODERATE);
             }
             else
             {
-                animator.SetInteger("Speed", (isRunning) ? 2 : 1);
-                OnCauseSound?.Invoke(SoundLevel.QUIET);
+                animator.SetInteger("Speed", (runButtonPressed) ? 2 : 1);
+                //OnCauseSound?.Invoke(SoundLevel.QUIET);
             }
         } else
         {
@@ -319,7 +342,7 @@ public class PlayerController : MonoBehaviour
             radioStaticSource.volume = radioStaticMaxVolume;
             radioObjectiveSoundSource.volume = 0f;
         }
-        OnCauseSound?.Invoke(SoundLevel.LOUD);
+        //OnCauseSound?.Invoke(SoundLevel.LOUD);
     }
 
     /// <summary>

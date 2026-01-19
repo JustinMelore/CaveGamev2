@@ -5,9 +5,10 @@ using UnityEngine;
 /// </summary>
 public enum SoundLevel
 {
-    QUIET = 0,
-    MODERATE = 1,
-    LOUD = 2
+    NONE = 0,
+    QUIET = 1,
+    MODERATE = 2,
+    LOUD = 3
 }
 
 /// <summary>
