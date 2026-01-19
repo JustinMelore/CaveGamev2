@@ -38,6 +38,11 @@ public class ChasingState : MonsterState
     {
         currentTargetChangeTimer += Time.deltaTime;
         UpdateTarget();
+        if(!agent.pathPending && agent.remainingDistance <= 0.1f)
+        {
+            agent.ResetPath();
+            manager.SwitchState(manager.IdleState);
+        }
     }
 
     /// <summary>

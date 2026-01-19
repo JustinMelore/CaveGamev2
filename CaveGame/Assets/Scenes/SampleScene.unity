@@ -281,7 +281,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ListeningRange
   monster: {fileID: 1792892502}
-  minAudibleLevel: 1
+  minAudibleLevel: 3
   gizmoColor: {r: 0.30921015, g: 0.91764706, b: 0.12941173, a: 0.65882355}
 --- !u!135 &239462772
 SphereCollider:
@@ -945,7 +945,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1004559792
 Transform:
   m_ObjectHideFlags: 0
@@ -1310,7 +1310,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1714283728
 Transform:
   m_ObjectHideFlags: 0
