@@ -24,8 +24,8 @@ public class ListeningRange : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         player = null;
-        PlayerController.OnCauseSound -= SoundHeard;
         OnPlayerExitRange?.Invoke(this);
+        PlayerController.OnCauseSound -= SoundHeard;
     }
 
     private void OnDrawGizmos()

@@ -54,9 +54,8 @@ public class InvestigatingState : MonsterState
                 agent.speed = moderateInvestgiatingSpeed;
                 break;
             case SoundLevel.LOUD:
-                //TODO Switch to chasing state
-                Debug.Log("The monster would begin chasing here");
-                agent.speed = moderateInvestgiatingSpeed;
+                agent.ResetPath();
+                manager.SwitchState(manager.ChasingState);
                 break;
         }
         NavMeshHit hit = new NavMeshHit();

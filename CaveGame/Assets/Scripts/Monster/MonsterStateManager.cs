@@ -18,9 +18,11 @@ public class MonsterStateManager : MonoBehaviour
     [SerializeField] private float wanderRadius = 10f;
 
     [Header("Investigating Settings")]
-    //TODO make several different investigating speeds
     [SerializeField] private float quietInvestigatingSpeed = 1f;
     [SerializeField] private float moderateInvestigatingSpeed = 1f;
+
+    [Header("Chasing Settings")]
+    [SerializeField] private float chasingSpeed = 1f;
 
     private Stack<ListeningRange> rangeStack;
 
@@ -29,6 +31,7 @@ public class MonsterStateManager : MonoBehaviour
     public WanderingState WanderingState { get; private set; }
     public IdleState IdleState { get; private set; }
     public InvestigatingState InvestigatingState { get; private set; }
+    public ChasingState ChasingState { get; private set; }
 
     /// <summary>
     /// The position of the last significant sound heard by the monster
@@ -43,6 +46,7 @@ public class MonsterStateManager : MonoBehaviour
         IdleState = new IdleState(idleTime);
         WanderingState = new WanderingState(agent, wanderSpeed, wanderRadius);
         InvestigatingState = new InvestigatingState(agent, quietInvestigatingSpeed, moderateInvestigatingSpeed);
+        ChasingState = new ChasingState(agent, chasingSpeed, FindFirstObjectByType<PlayerController>());
     }
 
     private void OnEnable()
