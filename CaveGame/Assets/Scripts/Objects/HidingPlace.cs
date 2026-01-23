@@ -12,11 +12,12 @@ public class HidingPlace : MonoBehaviour
     [SerializeField] private InteractionRange interactable;
     [SerializeField] private Transform entryPoint;
     [SerializeField] private Transform exitPoint;
-    private bool inUse = false;
+    private bool inUse;
 
     private void Awake()
     {
         PlayerController.OnInteractWithObject += OnHidingPlaceInteract;
+        inUse = false;
     }
 
     private void OnDestroy()
@@ -31,12 +32,15 @@ public class HidingPlace : MonoBehaviour
     private void OnHidingPlaceInteract(InteractionRange interactable)
     {
         if (interactable != this.interactable) return;
+        Debug.Log(!inUse);
         if(!inUse)
         {
+            Debug.Log("Hiding");
             OnHidingEnter?.Invoke(this);
             inUse = true;
         } else
         {
+            Debug.Log("Exiting");
             OnHidingExit?.Invoke(this);
             inUse = false;
         }
