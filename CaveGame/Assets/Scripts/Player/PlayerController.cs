@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Static settings")]
     [SerializeField] private Transform playerCamera;
+    [SerializeField] private PlayerInput playerInput;
 
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 2f;
@@ -188,11 +189,12 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void MovePlayer()
     {
+        if (!enabled) return;
         if (characterController.isGrounded && playerVelocity.y < 0) playerVelocity.y = -2f;
         playerVelocity.y += gravity * Time.deltaTime;
-        if (!enabled) return;
         //transform.rotation = Quaternion.Euler(playerRotation);
         transform.rotation = Quaternion.Euler(0f, playerRotation.y, 0f);
+        playerCamera.transform.localRotation = Quaternion.Euler(playerRotation.x, 0f, 0f);
         //Vector3 movement = (runButtonPressed && !isTuning ? sprintSpeedMultiplier : 1f) * moveSpeed * (transform.right * playerVelocity.x + transform.forward * playerVelocity.z);
         Vector3 movement;
         if(runButtonPressed && !isTuning)
@@ -205,7 +207,6 @@ public class PlayerController : MonoBehaviour
             movement = moveSpeed * (transform.right * playerVelocity.x + transform.forward * playerVelocity.z);
         }
         movement.y = playerVelocity.y;
-        playerCamera.transform.localRotation = Quaternion.Euler(playerRotation.x, 0f, 0f);
         if(!hidden) characterController.Move(movement * Time.deltaTime);
 
 
@@ -406,6 +407,7 @@ public class PlayerController : MonoBehaviour
         playerVelocity = Vector3.zero;
         characterController.enabled = true;
         StopTuning();
+        playerInput.SwitchCurrentActionMap("Locker");
         Debug.Log($"Player hiding in {hidingPlace.gameObject}");
     }
 
@@ -420,6 +422,7 @@ public class PlayerController : MonoBehaviour
         characterController.enabled = false;
         transform.position = hidingPlace.GetExitPoint().position;
         characterController.enabled = true;
+        playerInput.SwitchCurrentActionMap("Player");
         Debug.Log($"Player exited {hidingPlace.gameObject}");
     }
 }
