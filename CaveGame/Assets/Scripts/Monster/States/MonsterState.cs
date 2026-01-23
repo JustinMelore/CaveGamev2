@@ -27,4 +27,10 @@ public abstract class MonsterState
     /// <param name="volume">The volume level of the sound the monster heard</param>
     /// <param name="position">The position where the sound occurred</param>
     public abstract void SoundHeard(MonsterStateManager manager, SoundLevel volume, Vector3 position);
+
+    /// <summary>
+    /// Handles behavior that should occur when the monster reaches max rage
+    /// </summary>
+    /// <param name="manager">The state manager interacting with this state</param>
+    public abstract void RageFull(MonsterStateManager manager);
 }

@@ -47,7 +47,7 @@ public class WanderingState : MonsterState
     {
         Vector3 wanderPosition = GetTargetPosition(monsterPosition);
         agent.SetDestination(wanderPosition);
-        //Debug.Log($"Monster wandering to {wanderPosition}");
+        Debug.Log($"Monster wandering to {wanderPosition}");
     }
 
     public override void EnterState(MonsterStateManager manager)
@@ -70,5 +70,11 @@ public class WanderingState : MonsterState
         agent.ResetPath();
         manager.TriggeringSound = new Sound(volume, position);
         manager.SwitchState(manager.InvestigatingState);
+    }
+
+    public override void RageFull(MonsterStateManager manager)
+    {
+        //TODO Transition to rage state
+        Debug.Log("Monster is now enraged");
     }
 }

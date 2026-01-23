@@ -1561,7 +1561,10 @@ MonoBehaviour:
   wanderRadius: 30
   quietInvestigatingSpeed: 4
   moderateInvestigatingSpeed: 8
+  onFindNothingRageGain: 5
   chasingSpeed: 12
+  maxRageAmount: 100
+  defaultRageGain: 1
 --- !u!1001 &3018663483750439268
 PrefabInstance:
   m_ObjectHideFlags: 0

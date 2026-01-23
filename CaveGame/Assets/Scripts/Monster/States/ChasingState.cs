@@ -28,7 +28,7 @@ public class ChasingState : MonsterState
         currentTargetChangeTimer = targetChangeCooldown;
         agent.speed = chasingSpeed;
         UpdateTarget();
-        //Debug.Log("Monster is now chasing the player");
+        Debug.Log("Monster is now chasing the player");
     }
 
     public override void SoundHeard(MonsterStateManager manager, SoundLevel volume, Vector3 position)
@@ -43,6 +43,7 @@ public class ChasingState : MonsterState
         if(!agent.pathPending && agent.remainingDistance <= 0.1f && !updatingTarget)
         {
             agent.ResetPath();
+            manager.ClearRage();
             manager.SwitchState(manager.IdleState);
         }
     }
@@ -66,5 +67,10 @@ public class ChasingState : MonsterState
             currentTargetChangeTimer = 0f;
         }
         updatingTarget = isValidTarget;
+    }
+
+    public override void RageFull(MonsterStateManager manager)
+    {
+        //Already in chase, so no need to get enraged
     }
 }

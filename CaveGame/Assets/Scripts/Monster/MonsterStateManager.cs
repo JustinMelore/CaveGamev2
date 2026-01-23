@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -20,13 +19,18 @@ public class MonsterStateManager : MonoBehaviour
     [Header("Investigating Settings")]
     [SerializeField] private float quietInvestigatingSpeed = 1f;
     [SerializeField] private float moderateInvestigatingSpeed = 1f;
+    [SerializeField] private float onFindNothingRageGain;
 
     [Header("Chasing Settings")]
     [SerializeField] private float chasingSpeed = 1f;
 
-    private Stack<ListeningRange> rangeStack;
+    [Header("Rage Settings")]
+    [SerializeField] private float maxRageAmount = 100f;
+    [SerializeField] private float defaultRageGain = 1f;
 
+    private Stack<ListeningRange> rangeStack;
     private MonsterState currentState;
+    private float currentRage;
 
     public WanderingState WanderingState { get; private set; }
     public IdleState IdleState { get; private set; }
@@ -43,6 +47,7 @@ public class MonsterStateManager : MonoBehaviour
     {
         rangeStack = new Stack<ListeningRange>();
         agent = GetComponent<NavMeshAgent>();
+        currentRage = 0f;
         IdleState = new IdleState(idleTime);
         WanderingState = new WanderingState(agent, wanderSpeed, wanderRadius);
         InvestigatingState = new InvestigatingState(agent, quietInvestigatingSpeed, moderateInvestigatingSpeed);
@@ -82,6 +87,8 @@ public class MonsterStateManager : MonoBehaviour
     void Update()
     {
         currentState.Update(this);
+        currentRage += defaultRageGain * Time.deltaTime;
+        if (currentRage >= maxRageAmount) OnRageFull();
     }
 
     /// <summary>
@@ -104,6 +111,22 @@ public class MonsterStateManager : MonoBehaviour
         //Debug.Log($"Monster heard {volume} sound at {position}");
         if (range != rangeStack.Peek()) return;
         currentState.SoundHeard(this, volume, position);
+    }
+
+    public void OnMonsterFoundNothing()
+    {
+        currentRage += onFindNothingRageGain;
+        if (currentRage >= maxRageAmount) OnRageFull();
+    }
+
+    public void ClearRage()
+    {
+        currentRage = 0f;
+    }
+
+    public void OnRageFull()
+    {
+        currentState.RageFull(this);
     }
 }
  

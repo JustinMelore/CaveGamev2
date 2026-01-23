@@ -61,7 +61,7 @@ public class InvestigatingState : MonsterState
         NavMeshHit hit = new NavMeshHit();
         NavMesh.SamplePosition(triggeringSound.Position, out hit, 10f, 1);
         agent.SetDestination(hit.position);
-        //Debug.Log($"Investigating {triggeringSound.Volume} sound at {triggeringSound.Position}");
+        Debug.Log($"Investigating {triggeringSound.Volume} sound at {triggeringSound.Position}");
     }
 
     public override void SoundHeard(MonsterStateManager manager, SoundLevel volume, Vector3 position)
@@ -75,7 +75,14 @@ public class InvestigatingState : MonsterState
         if(!agent.pathPending && agent.remainingDistance <= 0.1f)
         {
             agent.ResetPath();
+            manager.OnMonsterFoundNothing();
             manager.SwitchState(manager.IdleState);
         }
+    }
+
+    public override void RageFull(MonsterStateManager manager)
+    {
+        //TODO Change to rage state
+        Debug.Log("Monster is now enraged");
     }
 }
