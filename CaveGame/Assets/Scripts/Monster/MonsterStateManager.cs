@@ -27,6 +27,11 @@ public class MonsterStateManager : MonoBehaviour
     [Header("Rage Settings")]
     [SerializeField] private float maxRageAmount = 100f;
     [SerializeField] private float defaultRageGain = 1f;
+    [SerializeField] private float soundThreshold = 10f;
+    [SerializeField] private float quietSoundGain = 1f;
+    [SerializeField] private float moderatSoundGain = 2f;
+    [SerializeField] private float loudSoundGain = 3f;
+    [SerializeField] private float listeningTime = 10f;
 
     private Stack<ListeningRange> rangeStack;
     private MonsterState currentState;
@@ -36,6 +41,7 @@ public class MonsterStateManager : MonoBehaviour
     public IdleState IdleState { get; private set; }
     public InvestigatingState InvestigatingState { get; private set; }
     public ChasingState ChasingState { get; private set; }
+    public EnragedState EnragedState { get; private set; }
 
     /// <summary>
     /// The position of the last significant sound heard by the monster
@@ -52,6 +58,7 @@ public class MonsterStateManager : MonoBehaviour
         WanderingState = new WanderingState(agent, wanderSpeed, wanderRadius);
         InvestigatingState = new InvestigatingState(agent, quietInvestigatingSpeed, moderateInvestigatingSpeed);
         ChasingState = new ChasingState(agent, chasingSpeed, FindFirstObjectByType<PlayerController>());
+        EnragedState = new EnragedState(agent, soundThreshold, quietSoundGain, moderatSoundGain, loudSoundGain, listeningTime);
     }
 
     private void OnEnable()

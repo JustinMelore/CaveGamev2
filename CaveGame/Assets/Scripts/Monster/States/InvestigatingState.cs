@@ -82,7 +82,7 @@ public class InvestigatingState : MonsterState
 
     public override void RageFull(MonsterStateManager manager)
     {
-        //TODO Change to rage state
-        Debug.Log("Monster is now enraged");
+        agent.ResetPath();
+        manager.SwitchState(manager.EnragedState);
     }
 }

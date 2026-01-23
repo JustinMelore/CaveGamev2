@@ -74,7 +74,7 @@ public class WanderingState : MonsterState
 
     public override void RageFull(MonsterStateManager manager)
     {
-        //TODO Transition to rage state
-        Debug.Log("Monster is now enraged");
+        agent.ResetPath();
+        manager.SwitchState(manager.EnragedState);
     }
 }

@@ -22,8 +22,7 @@ public class IdleState : MonsterState
 
     public override void RageFull(MonsterStateManager manager)
     {
-        //TODO Change to rage state
-        Debug.Log("Monster is now enraged");
+        manager.SwitchState(manager.EnragedState);
     }
 
     public override void SoundHeard(MonsterStateManager manager, SoundLevel volume, Vector3 position)
