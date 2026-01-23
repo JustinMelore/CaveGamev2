@@ -11,11 +11,14 @@ public class EnragedState : MonsterState
     private float moderateSoundGain;
     private float loudSoundGain;
     private float listeningTime;
+    private float teleportRange;
 
     private float currentListeningTime;
     private float currentListeningAmount;
+    private bool foundPlayer;
+    private PlayerController player;
 
-    public EnragedState(NavMeshAgent agent, float soundThreshold, float quietSoundGain, float moderateSoundGain, float loudSoundGain, float listeningTime)
+    public EnragedState(NavMeshAgent agent, float soundThreshold, float quietSoundGain, float moderateSoundGain, float loudSoundGain, float listeningTime, float teleportRange)
     {
         this.agent = agent;
         this.soundThreshold = soundThreshold;
@@ -23,8 +26,12 @@ public class EnragedState : MonsterState
         this.moderateSoundGain = moderateSoundGain;
         this.loudSoundGain = loudSoundGain;
         this.listeningTime = listeningTime;
+        this.teleportRange = teleportRange;
+
         currentListeningTime = 0f;
         currentListeningAmount = 0f;
+        foundPlayer = false;
+        player = UnityEngine.Object.FindFirstObjectByType<PlayerController>();
     }
 
     public override void EnterState(MonsterStateManager manager)
@@ -33,6 +40,7 @@ public class EnragedState : MonsterState
         currentListeningAmount = 0f;
         currentListeningTime = 0f;
         PlayerController.OnCauseSound += SoundHeardGlobal;
+        foundPlayer = false;
     }
 
 
@@ -66,6 +74,21 @@ public class EnragedState : MonsterState
         //Not used, as the monster does not use the listening radius objects during this state
     }
 
+    private void OnFoundPlayer(MonsterStateManager manager)
+    {
+        NavMeshHit hit = new NavMeshHit();
+        Vector2 randomDirection = Random.insideUnitCircle * teleportRange;
+        Vector3 desiredTarget = player.transform.position + new Vector3(randomDirection.x, 0f, randomDirection.y);
+        bool canMoveToTarget = NavMesh.SamplePosition(desiredTarget, out hit, 10f, 1);
+        if(canMoveToTarget)
+        {
+            Debug.Log("Monster found player");
+            manager.transform.position = hit.position;
+            manager.SwitchState(manager.ChasingState);
+        }
+        
+    }
+
     public override void Update(MonsterStateManager manager)
     {
         currentListeningTime += Time.deltaTime;
@@ -75,12 +98,13 @@ public class EnragedState : MonsterState
             manager.ClearRage();
             PlayerController.OnCauseSound -= SoundHeardGlobal;
             manager.SwitchState(manager.IdleState);
-        } else if(currentListeningAmount >= soundThreshold)
+        } else if(currentListeningAmount >= soundThreshold && !foundPlayer)
         {
-            //TODO Implement teleporting near player
-            Debug.Log("Monster found player");
+            foundPlayer = true;
             PlayerController.OnCauseSound -= SoundHeardGlobal;
-            manager.SwitchState(manager.ChasingState);
+        } else if(foundPlayer)
+        {
+            OnFoundPlayer(manager);
         }
     }
 }

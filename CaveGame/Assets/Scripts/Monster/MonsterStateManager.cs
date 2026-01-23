@@ -32,6 +32,7 @@ public class MonsterStateManager : MonoBehaviour
     [SerializeField] private float moderatSoundGain = 2f;
     [SerializeField] private float loudSoundGain = 3f;
     [SerializeField] private float listeningTime = 10f;
+    [SerializeField] private float teleportRange = 10f;
 
     private Stack<ListeningRange> rangeStack;
     private MonsterState currentState;
@@ -58,7 +59,7 @@ public class MonsterStateManager : MonoBehaviour
         WanderingState = new WanderingState(agent, wanderSpeed, wanderRadius);
         InvestigatingState = new InvestigatingState(agent, quietInvestigatingSpeed, moderateInvestigatingSpeed);
         ChasingState = new ChasingState(agent, chasingSpeed, FindFirstObjectByType<PlayerController>());
-        EnragedState = new EnragedState(agent, soundThreshold, quietSoundGain, moderatSoundGain, loudSoundGain, listeningTime);
+        EnragedState = new EnragedState(agent, soundThreshold, quietSoundGain, moderatSoundGain, loudSoundGain, listeningTime, teleportRange);
     }
 
     private void OnEnable()
