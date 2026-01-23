@@ -25,7 +25,6 @@ public class EnragedState : MonsterState
         this.listeningTime = listeningTime;
         currentListeningTime = 0f;
         currentListeningAmount = 0f;
-        PlayerController.OnCauseSound += SoundHeardGlobal;
     }
 
     public override void EnterState(MonsterStateManager manager)
@@ -33,6 +32,7 @@ public class EnragedState : MonsterState
         Debug.Log("Monster enraged and searching for player");
         currentListeningAmount = 0f;
         currentListeningTime = 0f;
+        PlayerController.OnCauseSound += SoundHeardGlobal;
     }
 
 
