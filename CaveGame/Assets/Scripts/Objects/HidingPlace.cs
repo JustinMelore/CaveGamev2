@@ -18,6 +18,7 @@ public class HidingPlace : MonoBehaviour
     {
         PlayerController.OnInteractWithObject += OnHidingPlaceInteract;
         inUse = false;
+        Debug.Log($"In use: {inUse}");
     }
 
     private void OnDestroy()
@@ -32,7 +33,7 @@ public class HidingPlace : MonoBehaviour
     private void OnHidingPlaceInteract(InteractionRange interactable)
     {
         if (interactable != this.interactable) return;
-        Debug.Log(!inUse);
+        Debug.Log($"In use: {inUse}");
         if(!inUse)
         {
             Debug.Log("Hiding");

@@ -49,6 +49,7 @@ public class PlayerController : MonoBehaviour
     private InteractionRange interactable;
     private bool canInteract;
     private bool hidden = false;
+    private float lastInteractTime;
 
     //Made a hash set to easily add and remove objectives
     private HashSet<ObjectiveItem> objectivesInRange;
@@ -132,13 +133,13 @@ public class PlayerController : MonoBehaviour
         {
 
             radioStaticSource.volume = radioStaticMaxVolume;
-            Debug.Log("Tuning radio");
+            //Debug.Log("Tuning radio");
         }
         else
         {
             radioStaticSource.volume = 0f;
             radioObjectiveSoundSource.volume = 0f;
-            Debug.Log("Stopped tuning radio");
+            //Debug.Log("Stopped tuning radio");
         }
     }
 
@@ -148,7 +149,7 @@ public class PlayerController : MonoBehaviour
         radioStaticSource.volume = 0f;
         radioObjectiveSoundSource.volume = 0f;
         isTuning = false;
-        Debug.Log("Stopped tuning radio");
+        //Debug.Log("Stopped tuning radio");
     }
 
     /// <summary>
@@ -157,11 +158,12 @@ public class PlayerController : MonoBehaviour
     /// <param name="inputValue"></param>
     private void OnInteract(InputValue inputValue)
     {
-        if (!enabled) return;
+        if (!enabled || Time.time - lastInteractTime < 0.3f) return;
         if (canInteract && interactable != null)
         {
+            lastInteractTime = Time.time;
             OnInteractWithObject?.Invoke(interactable);
-            Debug.Log($"Interacted with {interactable}");
+            //Debug.Log($"Interacted with {interactable}");
         }
     }
 
@@ -239,7 +241,7 @@ public class PlayerController : MonoBehaviour
             if (!canInteract)
             {
                 OnLookAtInteractable?.Invoke(interactable);
-                Debug.Log($"Now looking at {interactable}");
+                //Debug.Log($"Now looking at {interactable}");
             }
             canInteract = true;
         }
@@ -247,7 +249,7 @@ public class PlayerController : MonoBehaviour
         {
             OnLookAwayFromInteractable?.Invoke(interactable);
             canInteract = false;
-            Debug.Log($"Looked away from {interactable}");
+            //Debug.Log($"Looked away from {interactable}");
         }
     }
 
@@ -285,7 +287,7 @@ public class PlayerController : MonoBehaviour
     private void AddObjective(ObjectiveItem objective)
     {
         objectivesInRange.Add(objective);
-        Debug.Log($"Objective in range; {objectivesInRange.Count} objectives in range");
+        //Debug.Log($"Objective in range; {objectivesInRange.Count} objectives in range");
     }
 
     /// <summary>
@@ -295,7 +297,7 @@ public class PlayerController : MonoBehaviour
     private void RemoveObjective(ObjectiveItem objective)
     {
         objectivesInRange.Remove(objective);
-        Debug.Log($"Objective out of range; {objectivesInRange.Count} objectives in range");
+        //Debug.Log($"Objective out of range; {objectivesInRange.Count} objectives in range");
     }
 
 #nullable enable
@@ -337,8 +339,8 @@ public class PlayerController : MonoBehaviour
         {
             float closenessRange = 1f - minimumCloseness;
             mostDirectDot = Mathf.Round(mostDirectDot * 100) / 100 - minimumCloseness;
-            Debug.Log($"Closeness range: {closenessRange}");
-            Debug.Log($"Closeness: {mostDirectDot}");
+            //Debug.Log($"Closeness range: {closenessRange}");
+            //Debug.Log($"Closeness: {mostDirectDot}");
             float objectiveVolumePercentage = mostDirectDot / closenessRange;
 
             //TODO Uncomment for audio feedback
@@ -374,7 +376,7 @@ public class PlayerController : MonoBehaviour
     private void RegisterInteractable(InteractionRange interactable)
     {
         this.interactable = interactable;
-        Debug.Log($"Entered interaction range of {interactable}");
+        //Debug.Log($"Entered interaction range of {interactable}");
     }
 
     /// <summary>
@@ -389,7 +391,7 @@ public class PlayerController : MonoBehaviour
             OnLookAwayFromInteractable?.Invoke(interactable);
             canInteract = false;
         }
-        Debug.Log($"Exited interaction range of {interactable}");
+        //Debug.Log($"Exited interaction range of {interactable}");
     }
 
     /// <summary>
@@ -401,14 +403,14 @@ public class PlayerController : MonoBehaviour
         //TODO Tweak to accomodate hiding animation
         hidden = true;
         characterController.enabled = false;
+        playerInput.SwitchCurrentActionMap("Locker");
         transform.position = hidingPlace.GetEntryPoint().position;
         //playerRotation = Vector3.zero;
         playerRotation = hidingPlace.transform.rotation.eulerAngles;
         playerVelocity = Vector3.zero;
         characterController.enabled = true;
         StopTuning();
-        playerInput.SwitchCurrentActionMap("Locker");
-        Debug.Log($"Player hiding in {hidingPlace.gameObject}");
+        //Debug.Log($"Player hiding in {hidingPlace.gameObject}");
     }
 
     /// <summary>
@@ -419,10 +421,10 @@ public class PlayerController : MonoBehaviour
     {
         //TODO Tweak to accomodate exiting animation
         hidden = false;
+        playerInput.SwitchCurrentActionMap("Player");
         characterController.enabled = false;
         transform.position = hidingPlace.GetExitPoint().position;
         characterController.enabled = true;
-        playerInput.SwitchCurrentActionMap("Player");
-        Debug.Log($"Player exited {hidingPlace.gameObject}");
+        //Debug.Log($"Player exited {hidingPlace.gameObject}");
     }
 }

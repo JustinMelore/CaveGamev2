@@ -686,7 +686,7 @@
                 {
                     "name": "Interact",
                     "type": "Button",
-                    "id": "e9a100bf-443b-4e9e-86db-1e5fb752c9ca",
+                    "id": "2567c75b-64a9-42e3-95ac-fdbedc0c58a1",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -707,7 +707,7 @@
                 },
                 {
                     "name": "",
-                    "id": "65a81ba6-4540-4c51-be30-9c4b8f47be46",
+                    "id": "dc235092-74d5-40e4-ae62-2875c4beb867",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",

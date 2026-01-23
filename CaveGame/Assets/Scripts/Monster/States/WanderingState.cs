@@ -47,7 +47,7 @@ public class WanderingState : MonsterState
     {
         Vector3 wanderPosition = GetTargetPosition(monsterPosition);
         agent.SetDestination(wanderPosition);
-        Debug.Log($"Monster wandering to {wanderPosition}");
+        //Debug.Log($"Monster wandering to {wanderPosition}");
     }
 
     public override void EnterState(MonsterStateManager manager)

@@ -17,7 +17,7 @@ public class IdleState : MonsterState
     public override void EnterState(MonsterStateManager manager)
     {
         currentIdleTime = 0f;
-        Debug.Log("Monster idling");
+        //Debug.Log("Monster idling");
     }
 
     public override void SoundHeard(MonsterStateManager manager, SoundLevel volume, Vector3 position)

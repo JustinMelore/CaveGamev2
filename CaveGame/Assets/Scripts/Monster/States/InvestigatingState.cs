@@ -61,7 +61,7 @@ public class InvestigatingState : MonsterState
         NavMeshHit hit = new NavMeshHit();
         NavMesh.SamplePosition(triggeringSound.Position, out hit, 10f, 1);
         agent.SetDestination(hit.position);
-        Debug.Log($"Investigating {triggeringSound.Volume} sound at {triggeringSound.Position}");
+        //Debug.Log($"Investigating {triggeringSound.Volume} sound at {triggeringSound.Position}");
     }
 
     public override void SoundHeard(MonsterStateManager manager, SoundLevel volume, Vector3 position)

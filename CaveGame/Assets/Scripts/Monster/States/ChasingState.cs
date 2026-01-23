@@ -28,7 +28,7 @@ public class ChasingState : MonsterState
         currentTargetChangeTimer = targetChangeCooldown;
         agent.speed = chasingSpeed;
         UpdateTarget();
-        Debug.Log("Monster is now chasing the player");
+        //Debug.Log("Monster is now chasing the player");
     }
 
     public override void SoundHeard(MonsterStateManager manager, SoundLevel volume, Vector3 position)
