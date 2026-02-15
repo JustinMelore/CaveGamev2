@@ -170,7 +170,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: f61f294c5cd234b4ba0ae25467142371, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 3c9a8780d4f430e44b1571c7f7c46e86, type: 2}
+      objectReference: {fileID: 2100000, guid: 2c3e38a3007acc14fb2d8abf75826d92, type: 2}
     - target: {fileID: 919132149155446097, guid: f61f294c5cd234b4ba0ae25467142371, type: 3}
       propertyPath: m_Name
       value: Cave
