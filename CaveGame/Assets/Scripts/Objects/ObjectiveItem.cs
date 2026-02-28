@@ -8,6 +8,7 @@ public class ObjectiveItem : MonoBehaviour
 {
     public static event Action<ObjectiveItem> OnObjeciveRangeEnter;
     public static event Action<ObjectiveItem> OnObjectiveRangeExit;
+    public static event Action ObjectiveCollectedEvent;
 
     private SphereCollider detectionRange;
     [SerializeField] private InteractionRange interactionRange;
@@ -57,6 +58,7 @@ public class ObjectiveItem : MonoBehaviour
             //Will be replaced with a different visual indicator in the future, like an interact animation
             transform.parent.GetComponentInChildren<Renderer>().material.color = new Color(0f, 1f, 0f);
             Debug.Log($"Objective collected");
+            ObjectiveCollectedEvent?.Invoke();
             gameObject.SetActive(false);
         }
     }
