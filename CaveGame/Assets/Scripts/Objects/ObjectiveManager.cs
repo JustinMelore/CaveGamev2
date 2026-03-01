@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ public class ObjectiveManager : MonoBehaviour
     [SerializeField] private Transform[] spawnPositions;
     [SerializeField] private int objectiveCount;
     private int remainingObjectives;
+
+    public event Action<int> ObjectiveCountUpdatedEvent;
 
     private void Awake()
     {
@@ -31,6 +34,7 @@ public class ObjectiveManager : MonoBehaviour
             usedSpawns.Add(currentIndex);
             Instantiate(objective, spawnPositions[currentIndex]);
         }
+        ObjectiveCountUpdatedEvent?.Invoke(remainingObjectives);
     }
 
     private void OnEnable()
@@ -52,5 +56,6 @@ public class ObjectiveManager : MonoBehaviour
         {
             Debug.Log("All objectives collected!");
         }
+        ObjectiveCountUpdatedEvent?.Invoke(remainingObjectives);
     }
 }

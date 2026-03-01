@@ -5,5 +5,7 @@ using UnityEngine;
 /// </summary>
 public enum SoundType
 {
-    PLAYER_FOOSTEP = 0
+    PLAYER_FOOSTEP = 0,
+    BOOM = 1,
+    BEEP = 2
 }
