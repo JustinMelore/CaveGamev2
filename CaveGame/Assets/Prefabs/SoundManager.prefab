@@ -47,14 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
   source: {fileID: 3314872460159510989}
-  sounds:
-  - name: PLAYER_FOOSTEP
-    volume: 0.25
-    audioClips:
-    - {fileID: 8300000, guid: 9b9d0595355189343b73752e766330a6, type: 3}
-    - {fileID: 8300000, guid: 89a9f0c40d4359a4885a32e191560625, type: 3}
-    - {fileID: 8300000, guid: d1aec7d6d79ebc5429f5af88937b6d68, type: 3}
-    - {fileID: 8300000, guid: 8f31eb2fd34816c449fd55f82c50deb7, type: 3}
+  sounds: {fileID: 11400000, guid: f15f5470d82937745a8c73471d6c30f2, type: 2}
 --- !u!82 &3314872460159510989
 AudioSource:
   m_ObjectHideFlags: 0
