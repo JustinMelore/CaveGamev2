@@ -7,32 +7,8 @@ using UnityEngine.AI;
 /// </summary>
 public class MonsterStateManager : MonoBehaviour
 {
+    [SerializeField] private MonsterData data;
     private NavMeshAgent agent;
-
-    [Header("Idling Settings")]
-    [SerializeField] private float idleTime;
-
-    [Header("Wandering Settings")]
-    [SerializeField] private float wanderSpeed = 1f;
-    [SerializeField] private float wanderRadius = 10f;
-
-    [Header("Investigating Settings")]
-    [SerializeField] private float quietInvestigatingSpeed = 1f;
-    [SerializeField] private float moderateInvestigatingSpeed = 1f;
-    [SerializeField] private float onFindNothingRageGain;
-
-    [Header("Chasing Settings")]
-    [SerializeField] private float chasingSpeed = 1f;
-
-    [Header("Rage Settings")]
-    [SerializeField] private float maxRageAmount = 100f;
-    [SerializeField] private float defaultRageGain = 1f;
-    [SerializeField] private float soundThreshold = 10f;
-    [SerializeField] private float quietSoundGain = 1f;
-    [SerializeField] private float moderatSoundGain = 2f;
-    [SerializeField] private float loudSoundGain = 3f;
-    [SerializeField] private float listeningTime = 10f;
-    [SerializeField] private float teleportRange = 10f;
 
     private Stack<ListeningRange> rangeStack;
     private MonsterState currentState;
@@ -55,11 +31,11 @@ public class MonsterStateManager : MonoBehaviour
         rangeStack = new Stack<ListeningRange>();
         agent = GetComponent<NavMeshAgent>();
         currentRage = 0f;
-        IdleState = new IdleState(idleTime);
-        WanderingState = new WanderingState(agent, wanderSpeed, wanderRadius);
-        InvestigatingState = new InvestigatingState(agent, quietInvestigatingSpeed, moderateInvestigatingSpeed);
-        ChasingState = new ChasingState(agent, chasingSpeed, FindFirstObjectByType<PlayerController>());
-        EnragedState = new EnragedState(agent, soundThreshold, quietSoundGain, moderatSoundGain, loudSoundGain, listeningTime, teleportRange);
+        IdleState = new IdleState(data.idleTime);
+        WanderingState = new WanderingState(agent, data.wanderSpeed, data.wanderRadius);
+        InvestigatingState = new InvestigatingState(agent, data.quietInvestigatingSpeed, data.moderateInvestigatingSpeed);
+        ChasingState = new ChasingState(agent, data.chasingSpeed, FindFirstObjectByType<PlayerController>());
+        EnragedState = new EnragedState(agent, data.soundThreshold, data.quietSoundGain, data.moderatSoundGain, data.loudSoundGain, data.listeningTime, data.teleportRange);
     }
 
     private void OnEnable()
@@ -95,8 +71,8 @@ public class MonsterStateManager : MonoBehaviour
     void Update()
     {
         currentState.Update(this);
-        currentRage += defaultRageGain * Time.deltaTime;
-        if (currentRage >= maxRageAmount) OnRageFull();
+        currentRage += data.defaultRageGain * Time.deltaTime;
+        if (currentRage >= data.maxRageAmount) OnRageFull();
     }
 
     /// <summary>
@@ -123,8 +99,8 @@ public class MonsterStateManager : MonoBehaviour
 
     public void OnMonsterFoundNothing()
     {
-        currentRage += onFindNothingRageGain;
-        if (currentRage >= maxRageAmount) OnRageFull();
+        currentRage += data.onFindNothingRageGain;
+        if (currentRage >= data.maxRageAmount) OnRageFull();
     }
 
     public void ClearRage()
