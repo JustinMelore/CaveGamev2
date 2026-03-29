@@ -27,3 +27,9 @@ MonoBehaviour:
   loudSoundGain: 5
   listeningTime: 10
   teleportRange: 10
+  quietAttentionGain: 0
+  moderateAttentionGain: 0
+  loudAttentionGain: 0
+  slowInvestigatingThreshold: 100
+  moderateInvestigatingThreshold: 50
+  chasingThreshold: 25

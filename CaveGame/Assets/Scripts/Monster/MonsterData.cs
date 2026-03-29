@@ -27,4 +27,12 @@ public class MonsterData : ScriptableObject
     public float loudSoundGain;
     public float listeningTime;
     public float teleportRange;
+
+    [Header("Listening Settings")]
+    public float quietAttentionGain;
+    public float moderateAttentionGain;
+    public float loudAttentionGain;
+    public float slowInvestigatingThreshold;
+    public float moderateInvestigatingThreshold;
+    public float chasingThreshold;
 }

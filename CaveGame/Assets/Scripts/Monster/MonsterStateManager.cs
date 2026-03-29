@@ -13,6 +13,7 @@ public class MonsterStateManager : MonoBehaviour
     private Stack<ListeningRange> rangeStack;
     private MonsterState currentState;
     private float currentRage;
+    //TODO Implement listening amounts
 
     public WanderingState WanderingState { get; private set; }
     public IdleState IdleState { get; private set; }
@@ -92,7 +93,7 @@ public class MonsterStateManager : MonoBehaviour
     /// <param name="position">The position the sound occurred at</param>
     public void SoundHeard(SoundLevel volume, Vector3 position, ListeningRange range)
     {
-        //Debug.Log($"Monster heard {volume} sound at {position}");
+        Debug.Log($"Monster heard {volume} sound at {position}");
         if (range != rangeStack.Peek()) return;
         currentState.SoundHeard(this, volume, position);
     }
