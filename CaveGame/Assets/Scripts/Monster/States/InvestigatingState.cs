@@ -6,25 +6,27 @@ using UnityEngine.AI;
 /// </summary>
 public class InvestigatingState : MonsterState
 {
-    private SoundLevel loudestSound;
+    //private SoundLevel loudestSound;
     private float quietInvestigatingSpeed;
     private float moderateInvestgiatingSpeed;
-
+    private float increasedInterestAmount;
     private const float targetChangeCooldown = 0.5f;
     private float currentTargetChangeTimer;
 
     public InvestigatingState(NavMeshAgent agent, float quietInvestigatingSpeed, float moderateInvestigatingSpeed)
     {
         this.agent = agent;
-        loudestSound = SoundLevel.NONE;
+        //loudestSound = SoundLevel.NONE;
         this.quietInvestigatingSpeed = quietInvestigatingSpeed;
         this.moderateInvestgiatingSpeed = moderateInvestigatingSpeed;
         currentTargetChangeTimer = targetChangeCooldown;
+        increasedInterestAmount = 0f;
     }
     
     public override void EnterState(MonsterStateManager manager)
     {
-        loudestSound = SoundLevel.NONE;
+        //loudestSound = SoundLevel.NONE;
+        increasedInterestAmount = 0f;
         currentTargetChangeTimer = targetChangeCooldown;
         HandleNewSound(manager.TriggeringSound, manager);
     }
@@ -36,32 +38,32 @@ public class InvestigatingState : MonsterState
     /// <param name="manager">The state manager interacting with this state</param>
     private void HandleNewSound(Sound triggeringSound, MonsterStateManager manager)
     {
-        if (triggeringSound.Volume < loudestSound) return;
+        //if (triggeringSound.Volume < loudestSound) return;
 
-        if (currentTargetChangeTimer < targetChangeCooldown) return;
-        currentTargetChangeTimer = 0f;
+        //if (currentTargetChangeTimer < targetChangeCooldown) return;
+        //currentTargetChangeTimer = 0f;
 
-        manager.TriggeringSound = triggeringSound; //This and the line below are for when this method is used to override an existing sound
-        agent.ResetPath();
-        loudestSound = triggeringSound.Volume;
+        //manager.TriggeringSound = triggeringSound; //This line  for when this method is used to override an existing sound
+        //agent.ResetPath();
+        //loudestSound = triggeringSound.Volume;
         //TODO Add logic for playing a new "triggered" animation when a sound surpasses the previously loudest sound level
-        switch (triggeringSound.Volume)
-        {
-            case SoundLevel.QUIET:
-                agent.speed = quietInvestigatingSpeed;
-                break;
-            case SoundLevel.MODERATE:
-                agent.speed = moderateInvestgiatingSpeed;
-                break;
-            case SoundLevel.LOUD:
-                agent.ResetPath();
-                manager.SwitchState(manager.ChasingState);
-                break;
-        }
-        NavMeshHit hit = new NavMeshHit();
-        NavMesh.SamplePosition(triggeringSound.Position, out hit, 10f, 1);
-        agent.SetDestination(hit.position);
-        Debug.Log($"Investigating {triggeringSound.Volume} sound at {triggeringSound.Position}");
+        //switch (triggeringSound.Volume)
+        //{
+        //    case SoundLevel.QUIET:
+        //        agent.speed = quietInvestigatingSpeed;
+        //        break;
+        //    case SoundLevel.MODERATE:
+        //        agent.speed = moderateInvestgiatingSpeed;
+        //        break;
+        //    case SoundLevel.LOUD:
+        //        agent.ResetPath();
+        //        manager.SwitchState(manager.ChasingState);
+        //        break;
+        //}
+        //NavMeshHit hit = new NavMeshHit();
+        //NavMesh.SamplePosition(triggeringSound.Position, out hit, 10f, 1);
+        //agent.SetDestination(hit.position);
+        //Debug.Log($"Investigating {triggeringSound.Volume} sound at {triggeringSound.Position}");
     }
 
     public override void SoundHeard(MonsterStateManager manager, SoundLevel volume, Vector3 position)

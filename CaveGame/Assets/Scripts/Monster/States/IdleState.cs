@@ -27,8 +27,14 @@ public class IdleState : MonsterState
 
     public override void SoundHeard(MonsterStateManager manager, SoundLevel volume, Vector3 position)
     {
-        manager.TriggeringSound = new Sound(volume, position);
-        manager.SwitchState(manager.InvestigatingState);
+        //manager.TriggeringSound = new Sound(volume, position);
+        //manager.SwitchState(manager.InvestigatingState);
+        bool attentionGained = manager.UpdateInterestLevel(volume);
+        if(attentionGained)
+        {
+            manager.TriggeringSound = new Sound(volume, position);
+            manager.SwitchState(manager.InvestigatingState);
+        }
     }
 
     public override void Update(MonsterStateManager manager)

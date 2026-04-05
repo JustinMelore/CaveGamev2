@@ -67,9 +67,16 @@ public class WanderingState : MonsterState
 
     public override void SoundHeard(MonsterStateManager manager, SoundLevel volume, Vector3 position)
     {
-        agent.ResetPath();
-        manager.TriggeringSound = new Sound(volume, position);
-        manager.SwitchState(manager.InvestigatingState);
+        //agent.ResetPath();
+        //manager.TriggeringSound = new Sound(volume, position);
+        //manager.SwitchState(manager.InvestigatingState);
+        bool attentionGained = manager.UpdateInterestLevel(volume);
+        if (attentionGained)
+        {
+            agent.ResetPath();
+            manager.TriggeringSound = new Sound(volume, position);
+            manager.SwitchState(manager.InvestigatingState);
+        }
     }
 
     public override void RageFull(MonsterStateManager manager)

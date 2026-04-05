@@ -12,8 +12,9 @@ public class MonsterStateManager : MonoBehaviour
 
     private Stack<ListeningRange> rangeStack;
     private MonsterState currentState;
-    private float currentRage;
+    private float currentRage = 0f;
     //TODO Implement listening amounts
+    private float initialInvestigationInterest = 0f;
 
     public WanderingState WanderingState { get; private set; }
     public IdleState IdleState { get; private set; }
@@ -26,12 +27,16 @@ public class MonsterStateManager : MonoBehaviour
     /// </summary>
     public Sound TriggeringSound { get; set; }
 
+    /// <summary>
+    /// The numerical data of the monster
+    /// </summary>
+    public MonsterData Data { get { return data; } private set { data = value; } }
+
     
     void Awake()
     {
         rangeStack = new Stack<ListeningRange>();
         agent = GetComponent<NavMeshAgent>();
-        currentRage = 0f;
         IdleState = new IdleState(data.idleTime);
         WanderingState = new WanderingState(agent, data.wanderSpeed, data.wanderRadius);
         InvestigatingState = new InvestigatingState(agent, data.quietInvestigatingSpeed, data.moderateInvestigatingSpeed);
@@ -98,6 +103,28 @@ public class MonsterStateManager : MonoBehaviour
         currentState.SoundHeard(this, volume, position);
     }
 
+    /// <summary>
+    /// Updates the monster's initial attention amount based on a given sound's volume
+    /// </summary>
+    /// <param name="volume">The volume of the sound getting the monster's attention</param>
+    /// <returns>True if the monster's attention has been gained, false otherwise</returns>
+    public bool UpdateInterestLevel(SoundLevel volume)
+    {
+        switch(volume)
+        {
+            case SoundLevel.QUIET:
+                initialInvestigationInterest += Data.quietAttentionGain * Time.deltaTime;
+                break;
+            case SoundLevel.MODERATE:
+                initialInvestigationInterest += Data.moderateAttentionGain * Time.deltaTime;
+                break;
+            case SoundLevel.LOUD:
+                initialInvestigationInterest += Data.loudAttentionGain * Time.deltaTime;
+                break;
+        }
+        return initialInvestigationInterest >= Data.slowInvestigatingThreshold;
+    }
+
     public void OnMonsterFoundNothing()
     {
         currentRage += data.onFindNothingRageGain;
@@ -112,6 +139,14 @@ public class MonsterStateManager : MonoBehaviour
     public void OnRageFull()
     {
         currentState.RageFull(this);
+    }
+
+    /// <summary>
+    /// Resets the monster's initial attention to 0
+    /// </summary>
+    public void ClearInterest()
+    {
+        initialInvestigationInterest = 0f;
     }
 }
  
